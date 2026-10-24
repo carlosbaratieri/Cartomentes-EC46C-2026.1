@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>Cartomentes</title>
+</head>
+<body>
+    <nav class="barra-lateral fechada">
+        <header>
+            <div style="display: flex; align-items: center;">
+                <div class="alternar mini-baralho" data-tooltip="Barra lateral">
+                    <div class="carta carta-1"><i class="fa-solid fa-brain"></i></div>
+                    <div class="carta carta-2"><i class="fa-solid fa-brain"></i></div>
+                    <div class="carta carta-3"><i class="fa-solid fa-brain"></i></div>
+                    <div class="carta carta-4"><i class="fa-solid fa-brain"></i></div>
+                </div>
+                <div class="texto texto-cabecalho" style="margin-left: 8px;">
+                    <span class="nome">Cartomentes</span>
+                    <span class="profissao">TCG</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="barra-menu">
+            <div class="menu">
+                <ul class="links-menu">
+                    <li class="link-nav ativo" data-target="cartas" data-tooltip="Cartas">
+                        <a href="#"><i class="bx bx-image-alt icon"></i><span class="texto nav-texto">Cartas</span></a>
+                    </li>
+                    <li class="link-nav" data-target="favoritos" data-tooltip="Favoritos">
+                        <a href="#"><i class="bx bx-heart icon"></i><span class="texto nav-texto">Favoritos</span></a>
+                    </li>
+                    <li class="link-nav" data-target="colecoes" data-tooltip="Coleções">
+                        <a href="#"><i class="bx bx-collection icon"></i><span class="texto nav-texto">Coleções</span></a>
+                    </li>
+                    <li class="link-nav" data-target="criacao" data-tooltip="Criação">
+                        <a href="#"><i class="bx bx-plus-circle icon"></i><span class="texto nav-texto">Criação</span></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="conteudo-inferior">
+                <ul>
+                    <li class="modo">
+                        <div class="lua-sol">
+                            <i class="bx bx-moon icon lua"></i>
+                            <i class="bx bx-sun icon sol"></i>
+                        </div>
+                        <span class="texto-modo texto">Modo Escuro</span>
+                        <div class="alternar-interruptor"><span class="interruptor"></span></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section class="principal">
+        <div id="cartas" class="pagina" style="display: block;">
+            <div class="barra-pesquisa">
+                <i class="bx bx-search"></i>
+                <input type="text" id="busca-cartas" placeholder="Pesquisar cartas...">
+            </div>
+            <div class="cabecalho-cartas">
+                <div class="filtros" id="filtros-tags">
+                    <button class="filtro-ativo" data-tag="todas">Todas (0)</button>
+                </div>
+                <div class="ordenacao">
+                    <label for="ordenar-select">Ordenar por:</label>
+                    <select id="ordenar-select">
+                        <option value="recentes">Mais recentes</option>
+                        <option value="antigas">Mais antigas</option>
+                        <option value="az">A – Z</option>
+                        <option value="za">Z – A</option>
+                    </select>
+                </div>
+            </div>
+            <div class="empty-cartas" id="empty-cartas">
+                <h2>Nenhuma carta ainda</h2>
+                <p>Comece criando sua primeira carta!</p>
+                <button class="btn-criar-carta" id="botao-ir-criar">Criar carta</button>
+            </div>
+            <div class="grid-cartas" id="grid-cartas"></div>
+            <div class="paginacao" id="paginacao-cartas"></div>
+        </div>
+        <div id="favoritos" class="pagina" style="display: none;">
+            <div class="barra-pesquisa">
+                <i class="bx bx-search"></i>
+                <input type="text" id="busca-favoritos" placeholder="Pesquisar favoritos...">
+            </div>
+            <div class="empty-favoritos" id="empty-favoritos">
+                <h2>Nenhuma carta favoritada</h2>
+                <p>Explore suas cartas e favorite as que você mais gosta!</p>
+                <button class="btn-criar-carta" id="botao-ir-cartas">Ir para Cartas</button>
+            </div>
+            <div class="grid-cartas" id="grid-favoritos"></div>
+            <div class="paginacao" id="paginacao-favoritos"></div>
+        </div>
+        <div id="colecoes" class="pagina" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                <div class="barra-pesquisa">
+                    <i class="bx bx-search"></i>
+                    <input type="text" id="busca-colecoes" placeholder="Pesquisar coleções...">
+                </div>
+                <button class="btn-criar-carta" id="botao-abrir-modal-colecao" style="flex-shrink:0;">
+                    <i class="fas fa-plus"></i> Nova Coleção
+                </button>
+            </div>
+
+            <div class="empty-colecoes" id="empty-colecoes" style="display: flex !important;">
+                <h2>Nenhuma coleção existente</h2>
+                <p>Crie sua primeira coleção selecionando cartas!</p>
+            </div>
+
+            <div class="colecoes-grid" id="colecoes-grid"></div>
+        </div>
+        <div id="criacao" class="pagina" style="display: none;">
+            <div class="criacao-container">
+                <div class="preview-carta">
+                    <div class="carta-generica-tcg" id="carta-preview">
+                        <div class="corpo-da-carta">
+                            <div class="cabecalho-da-carta">
+                                <span class="nome-do-personagem" id="preview-nome">Mago de Gelo</span>
+                                <div class="tipo-de-energia" id="preview-tipo">Gelo</div>
+                            </div>
+                            <div class="moldura-da-imagem">
+                                <img class="arte-da-carta" id="preview-imagem" src="https://picsum.photos/300/190" alt="Arte da Carta">
+                            </div>
+                            <div class="barra-de-especificacoes">
+                                <span class="raridade-da-carta" id="preview-raridade">✨ Lendário</span>
+                                <span class="custo-da-carta" id="preview-custo">Custo: 3</span>
+                            </div>
+                            <div class="conteiner-de-atributos">
+                                <div class="grade-de-atributos">
+                                    <div class="item-de-atributo">
+                                        <span class="rotulo-do-atributo">ATK</span>
+                                        <span class="valor-do-atributo" id="preview-atk">45</span>
+                                    </div>
+                                    <div class="item-de-atributo">
+                                        <span class="rotulo-do-atributo">DEF</span>
+                                        <span class="valor-do-atributo" id="preview-def">60</span>
+                                    </div>
+                                    <div class="item-de-atributo">
+                                        <span class="rotulo-do-atributo">Vida</span>
+                                        <span class="valor-do-atributo" id="preview-vida-valor">30</span>
+                                    </div>
+                                </div>
+                                <p class="descricao-da-carta" id="preview-descricao">"Capaz de moldar nevascas com o estalar de dedos. Reduz a velocidade de movimento de todos os inimigos no campo de batalha e quebra defesas físicas com estalagmites afiadas."</p>
+                                <div id="preview-tags" class="preview-tags"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formulario-criacao">
+                    <h2>Informações da carta</h2>
+                    <form id="form-carta" novalidate>
+                        <div class="campo">
+                            <label for="nome-carta" class="label-obrigatorio">Nome da carta</label>
+                            <input type="text" id="nome-carta" name="nome" placeholder="Ex: Dragão de Fogo" required>
+                        </div>
+                        <div class="campo">
+                            <label class="label-obrigatorio">Tipo da carta</label>
+                            <div class="grade-tipos" id="grade-tipos"></div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="descricao-carta" class="label-obrigatorio">Descrição (máx. 120 palavras)</label>
+                            <textarea id="descricao-carta" name="descricao" placeholder="Escreva a biografia ou efeito da carta..." required></textarea>
+                            <span class="contador-palavras">0/120 palavras</span>
+                        </div>
+
+                        <div class="campo atributos">
+                            <span class="label-obrigatorio">Atributos</span>
+                            <div class="grupo-atributos">
+                                <div class="atributo-item">
+                                    <span>Custo</span>
+                                    <div class="controle-numero">
+                                        <button type="button" class="btn-menos">−</button>
+                                        <span class="valor-atributo" data-atributo="custo">0</span>
+                                        <button type="button" class="btn-mais">+</button>
+                                    </div>
+                                </div>
+                                <div class="atributo-item">
+                                    <span>ATK</span>
+                                    <div class="controle-numero">
+                                        <button type="button" class="btn-menos">−</button>
+                                        <span class="valor-atributo" data-atributo="atk">0</span>
+                                        <button type="button" class="btn-mais">+</button>
+                                    </div>
+                                </div>
+                                <div class="atributo-item">
+                                    <span>Vida</span>
+                                    <div class="controle-numero">
+                                        <button type="button" class="btn-menos">−</button>
+                                        <span class="valor-atributo" data-atributo="vida">0</span>
+                                        <button type="button" class="btn-mais">+</button>
+                                    </div>
+                                </div>
+                                <div class="atributo-item">
+                                    <span>DEF</span>
+                                    <div class="controle-numero">
+                                        <button type="button" class="btn-menos">−</button>
+                                        <span class="valor-atributo" data-atributo="def">0</span>
+                                        <button type="button" class="btn-mais">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="campo raridade">
+                            <span class="label-obrigatorio">Raridade</span>
+                            <div class="opcoes-raridade">
+                                <label><input type="radio" name="raridade" value="Comum" checked> Comum</label>
+                                <label><input type="radio" name="raridade" value="Raro"> Raro</label>
+                                <label><input type="radio" name="raridade" value="Épico"> Épico</label>
+                                <label><input type="radio" name="raridade" value="Lendário"> Lendário</label>
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label>Cor de fundo da carta</label>
+                            <input type="color" id="cor-fundo" value="#cca43b" style="width:100%; padding:4px; cursor:pointer;">
+                        </div>
+                        <div class="campo">
+                            <label>Cor da borda da carta</label>
+                            <input type="color" id="cor-borda" value="#cca43b" style="width:100%; padding:4px; cursor:pointer;">
+                        </div>
+                        <div class="campo">
+                            <label>Cor do corpo da carta (fundo interno)</label>
+                            <input type="color" id="cor-corpo" value="#151518" style="width:100%; padding:4px; cursor:pointer;">
+                        </div>
+
+                        <div class="campo upload-imagem">
+                            <label>Arte da carta</label>
+                            <div class="area-upload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Arraste uma imagem ou</p>
+                                <button type="button" class="botao-selecionar">Selecionar arquivos</button>
+                                <input type="file" accept=".png,.jpg,.jpeg" style="display: none;">
+                                <span class="info-formato">PNG ou JPG até 5MB</span>
+                                <input type="hidden" id="imagem-base64" value="">
+                            </div>
+                        </div>
+
+                        <div class="campo tags">
+                            <label>Tags</label>
+                            <div class="area-tags">
+                                <button type="button" class="btn-adicionar-tag">+</button>
+                            </div>
+                            <input type="text" class="input-nova-tag" placeholder="Nova tag..." style="display: none;">
+                        </div>
+
+                        <div class="botoes-acao">
+                            <button type="button" class="btn-cancelar"><i class="fas fa-times"></i> Cancelar</button>
+                            <button type="button" class="btn-salvar-png" id="btn-salvar-png"><i class="fas fa-image"></i> Salvar PNG</button>
+                            <button type="submit" class="btn-salvar"><i class="fas fa-save"></i> Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal-overlay" id="modal-colecao" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Selecione as cartas para a coleção</h2>
+                <button class="modal-fechar" id="fechar-modal-colecao">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="grid-cartas-modal" id="grid-cartas-modal"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" id="cancelar-modal-colecao">Cancelar</button>
+                <button class="btn-salvar" id="salvar-modal-colecao">Salvar coleção</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay modal-colecao-detalhe" id="modal-detalhe-colecao" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="titulo-detalhe-colecao">Coleção</h2>
+                <button class="modal-fechar" id="fechar-modal-detalhe">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+                    <input type="text" id="editar-nome-colecao" value="" placeholder="Nome da coleção" style="flex:1; padding: 8px 14px; border: 1.5px solid var(--cor-borda); border-radius: 8px; background: var(--cor-fundo-campo); color: var(--cor-texto); font-size:1rem;">
+                    <button class="btn-salvar" id="salvar-nome-colecao" style="padding: 8px 20px;">Renomear</button>
+                    <button class="btn-cancelar" id="excluir-colecao-detalhe" style="padding: 8px 20px;"><i class="fas fa-trash"></i> Excluir</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <span id="contagem-cartas-colecao" style="color: var(--cor-texto); font-weight:500;">0 cartas</span>
+                    <button class="btn-criar-carta" id="adicionar-cartas-colecao" style="padding: 6px 18px; font-size:0.9rem;"><i class="fas fa-plus"></i> Adicionar cartas</button>
+                </div>
+                <div class="cartas-na-colecao" id="cartas-na-colecao"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" id="fechar-modal-detalhe-footer">Fechar</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="modal-visualizacao" style="display: none;">
+        <div class="modal-content modal-carta-grande">
+            <div class="modal-header modal-header-enxuto">
+                <button class="modal-fechar modal-fechar-menor" id="fechar-modal-visualizacao">&times;</button>
+            </div>
+            <div class="modal-body modal-body-lado-a-lado">
+                <div class="carta-grande-container">
+                    <div id="carta-grande-wrapper"></div>
+                </div>
+                <div class="acoes-carta">
+                    <button class="btn-favoritar" id="btn-favoritar-modal">
+                        <i class="bx bx-heart"></i> Favoritar
+                    </button>
+                    <div class="adicionar-colecao">
+                        <select id="select-colecao-modal">
+                            <option value="">Selecione uma coleção</option>
+                        </select>
+                        <button class="btn-adicionar-colecao" id="btn-adicionar-colecao-modal">Adicionar</button>
+                    </div>
+                    <button class="btn-excluir-carta" id="btn-excluir-modal"><i class="fas fa-trash"></i> Excluir Carta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
